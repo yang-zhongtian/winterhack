@@ -1,7 +1,13 @@
 # Laser Pointer Distance Calculator
 
+Author: Zhongtian Yang
+
 This Python script is designed to detect a red laser pointer dot in a video stream and calculate the distance to the
 laser pointer based on its size. It uses the OpenCV library for image processing and analysis.
+
+## Code Repository
+
+**https://github.com/yang-zhongtian/winterhack**
 
 ## Overview
 
@@ -57,23 +63,17 @@ The following flow diagram illustrates the process of detecting the laser pointe
 ```mermaid
 flowchart TD
     A[Start] --> B[Read Frame from Video]
-    B --> C[Convert Frame to HSV Color Space]
-    C --> D[Create Red Color Masks]
-    D --> E[Combine Red Masks]
-    E --> F[Apply Morphological Operations]
-    F --> G[Find Contours in the Mask]
-    G --> H{Are Contours Found?}
-    H -- Yes --> I[Find the Largest Contour]
-    I --> J[Calculate the Center and Radius]
-    J --> K[Calculate Distance]
-    K --> L[Draw Detected Dot and Distance on Frame]
-    H -- No --> M[Return Frame with No Distance]
-    L --> N[Display Frame]
-    M --> N
-    N --> O{Is 'q' Pressed?}
-    O -- Yes --> P[Exit]
-    O -- No --> B
-    P --> Q[End]
+    B --> C[Convert to HSV & Apply Red Mask]
+    C --> D[Apply Morphological Operations]
+    D --> E{Find Contours?}
+    E -- Yes --> F[Find Largest Contour and Calculate Distance]
+    F --> G[Draw Dot and Distance on Frame]
+    E -- No --> H[Return Frame with No Distance]
+    G --> I[Display Frame]
+    H --> I
+    I --> J{Is 'q' Pressed?}
+    J -- Yes --> K[End]
+    J -- No --> B
 ```
 
 ## The methods to extract the laser dot
@@ -83,25 +83,25 @@ flowchart TD
 1. Convert the frame to the HSV color space.
 2. Mask the red color in the frame using the specified color ranges.
 
-Result: ![Color Filtered Image](doc/color_filter.png)
+<img src="doc/color_filter.png" alt="Color Filtered Image" style="zoom: 33%;" />
 
 ### 2. Dilate
 
 Dilate the mask to fill in the center of the laser dot, which is white and neglected in the color filtering step.
 
-Result: ![Dilated Image](doc/dilate.png)
+<img src="doc/dilate.png" alt="Dilated Image" style="zoom: 33%;" />
 
 ### 3. Erode
 
 Erode the mask to remove the surrounding red light beam and keep only the laser dot in the center.
 
-Result: ![Eroded Image](doc/erode.png)
+<img src="doc/erode.png" alt="Eroded Image" style="zoom: 33%;" />
 
 ### 4. Contour Detection
 
 Find the dot radius and position by matching the image with circle contours.
 
-Result: ![Contour Detection](doc/contour.png)
+<img src="doc/contour.png" alt="Contour Detection" style="zoom: 33%;" />
 
 ### 5. Distance Calculation
 
@@ -109,6 +109,6 @@ Calculate the distance to the laser pointer based on the known size of the laser
 
 The formula used for distance calculation is:
 
-$$ distance = \frac{KnownRadius * KnownDistance}{radius} $$
+$ distance = \frac{KnownRadius * KnownDistance}{radius} $
 
-Result: ![Distance Calculation](doc/distance.png)
+<img src="doc/distance.png" alt="Distance Calculation" style="zoom: 33%;" />
